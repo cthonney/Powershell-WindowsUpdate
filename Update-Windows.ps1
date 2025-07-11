@@ -1,113 +1,79 @@
-# --- Configuration de la journalisation (LOGGING) ---
-$LogFilePath = Join-Path -Path $env:TEMP -ChildPath "WindowsUpdateScript_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
-# Démarrer la transcription : tout ce qui est affiché dans la console sera aussi écrit dans ce fichier log
-Start-Transcript -Path $LogFilePath -Append -NoClobber -Force
+<#
+.SYNOPSIS
+    Automatise la recherche, le téléchargement et l'installation des mises à jour Windows.
+.DESCRIPTION
+    Ce script utilise le module PSWindowsUpdate pour gérer le processus de mise à jour de Windows.
+    Il vérifie d'abord si le module est installé, l'installe si nécessaire, puis procède à l'installation des mises à jour.
+    Des messages d'état sont affichés tout au long du processus.
+.NOTES
+    Auteur: Gemini
+    Version: 1.0
+    Date: 2025-07-11
+#>
 
-Write-Host "--- Démarrage du script de mise à jour Windows ---"
-Write-Host "La sortie est également enregistrée dans : $LogFilePath"
+# Forcer la politique d'exécution pour le processus actuel afin de permettre l'exécution du script
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process -Force
 
-# --- Reste du script ---
+# --- Début du Script ---
 
-# Vérifier si le module PSWindowsUpdate est installé, sinon l'installer
-if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
-    Write-Host "Le module PSWindowsUpdate n'est pas installé. Tentative d'installation..."
+# Message de bienvenue
+Write-Host "===============================================" -ForegroundColor Green
+Write-Host "  Script de mise à jour automatique de Windows " -ForegroundColor Green
+Write-Host "==============================================="
+Write-Host
+
+# Étape 1: Vérifier et installer le module PSWindowsUpdate
+Write-Host "[ÉTAPE 1/4] Vérification du module 'PSWindowsUpdate'..." -ForegroundColor Cyan
+
+# Vérifier si le module est installé
+if (Get-Module -ListAvailable -Name PSWindowsUpdate) {
+    Write-Host " -> Le module 'PSWindowsUpdate' est déjà installé." -ForegroundColor Green
+} else {
+    Write-Host " -> Le module 'PSWindowsUpdate' n'est pas trouvé. Tentative d'installation..." -ForegroundColor Yellow
     try {
-        # S'assurer que le dépôt PSGallery est enregistré et de confiance (souvent nécessaire la première fois)
-        # Ceci peut être commenté si vous savez que PSGallery est déjà configuré.
-        # Set-PSRepository -Name PSGallery -InstallationPolicy Trusted -ErrorAction SilentlyContinue
-
-        Install-Module -Name PSWindowsUpdate -Force -Confirm:$false -Scope AllUsers -ErrorAction Stop
-        Write-Host "Le module PSWindowsUpdate a été installé avec succès."
-    }
-    catch {
-        Write-Error "Échec de l'installation du module PSWindowsUpdate. Message d'erreur : $($_.Exception.Message). Veuillez l'installer manuellement ou exécuter ce script avec des privilèges administrateur si ce n'est pas le cas."
-        # Quitte le script avec un code d'erreur, mais seulement après la journalisation finale
-        Stop-Transcript
-        exit 1
+        # Installer le module sans confirmation manuelle
+        Install-Module -Name PSWindowsUpdate -Force -AcceptLicense -Confirm:$false
+        Write-Host " -> Le module 'PSWindowsUpdate' a été installé avec succès." -ForegroundColor Green
+    } catch {
+        Write-Host " -> ERREUR: Impossible d'installer le module 'PSWindowsUpdate'. Veuillez vérifier votre connexion Internet ou l'exécuter en tant qu'administrateur." -ForegroundColor Red
+        # Pause pour que l'utilisateur puisse lire le message avant de fermer
+        Write-Host "Appuyez sur Entrée pour quitter."
+        Read-Host
+        Exit
     }
 }
-else {
-    Write-Host "Le module PSWindowsUpdate est déjà installé."
-}
+Write-Host
 
-# Importer le module (nécessaire pour utiliser ses cmdlets)
-# Utiliser -Force pour recharger le module si nécessaire et -ErrorAction Stop pour détecter les problèmes.
+# Étape 2: Importer le module
+Write-Host "[ÉTAPE 2/4] Importation du module 'PSWindowsUpdate'..." -ForegroundColor Cyan
 try {
-    Import-Module PSWindowsUpdate -Force -ErrorAction Stop
-    Write-Host "Module PSWindowsUpdate importé avec succès."
+    Import-Module PSWindowsUpdate -ErrorAction Stop
+    Write-Host " -> Module importé avec succès." -ForegroundColor Green
+} catch {
+    Write-Host " -> ERREUR: Impossible d'importer le module 'PSWindowsUpdate'." -ForegroundColor Red
+    Write-Host "Appuyez sur Entrée pour quitter."
+    Read-Host
+    Exit
 }
-catch {
-    Write-Error "Échec de l'importation du module PSWindowsUpdate. Message d'erreur : $($_.Exception.Message). Vérifiez qu'il est bien installé et accessible."
-    # Quitte le script avec un code d'erreur, mais seulement après la journalisation finale
-    Stop-Transcript
-    exit 1
-}
+Write-Host
 
-# --- Configuration des options ---
+# Étape 3: Rechercher, télécharger et installer les mises à jour
+Write-Host "[ÉTAPE 3/4] Recherche, téléchargement et installation des mises à jour..." -ForegroundColor Cyan
+Write-Host "Cette opération peut prendre beaucoup de temps. Veuillez patienter..." -ForegroundColor Yellow
 
-# Redémarrage automatique si nécessaire.
-# True : Le système redémarrera automatiquement après les mises à jour si un redémarrage est requis.
-# False : Le système ne redémarrera pas automatiquement. Une notification sera affichée.
-$AutoReboot = $true
+# Obtenir les mises à jour. L'option -AcceptAll accepte toutes les mises à jour, et -AutoReboot redémarre si nécessaire.
+# Utilisez Get-WindowsUpdate -Install -Verbose pour plus de détails.
+Get-WindowsUpdate -Install -AcceptAll -AutoReboot -Verbose
 
-# Inclure les mises à jour des produits Microsoft (ex: Office).
-# True : Les mises à jour pour d'autres produits Microsoft seront également installées.
-# False : Seules les mises à jour Windows OS seront installées.
-$IncludeMicrosoftProducts = $true
+Write-Host " -> Processus de mise à jour terminé." -ForegroundColor Green
+Write-Host
 
-# --- Début du processus de mise à jour ---
+# Étape 4: Fin du script
+Write-Host "[ÉTAPE 4/4] Toutes les opérations sont terminées." -ForegroundColor Cyan
+Write-Host "==============================================="
+Write-Host
 
-Write-Host "`n--- Démarrage de la recherche de mises à jour Windows ---"
-
-try {
-    # Rechercher les mises à jour disponibles
-    Write-Host "Recherche des mises à jour disponibles..."
-    $updates = Get-WUList -MicrosoftUpdate:$IncludeMicrosoftProducts -ErrorAction Stop
-
-    if ($updates -eq $null -or $updates.Count -eq 0) {
-        Write-Host "Aucune mise à jour disponible."
-    }
-    else {
-        Write-Host "Mises à jour trouvées :"
-        # Affiche les colonnes pertinentes sans tronquer
-        $updates | Format-Table -Property ComputerName, Status, KB, Size, Title -AutoSize
-
-        # Télécharger et installer les mises à jour
-        Write-Host "`n--- Démarrage du téléchargement et de l'installation des mises à jour ---"
-        # Utilise -AcceptAll pour accepter automatiquement toutes les conditions de licence
-        # Utilise -AutoReboot pour redémarrer si $AutoReboot est vrai
-        # Utilise -MicrosoftUpdate pour inclure les mises à jour Microsoft si $IncludeMicrosoftProducts est vrai
-        Install-WUUpdate -AcceptAll -AutoReboot:$AutoReboot -MicrosoftUpdate:$IncludeMicrosoftProducts -Verbose -ErrorAction Stop
-
-        Write-Host "`n--- Processus de mise à jour terminé. ---"
-
-        # Vérifier si un redémarrage est en attente
-        if (Test-PendingReboot) {
-            Write-Host "Un redémarrage est en attente pour finaliser l'installation des mises à jour."
-            if (-not $AutoReboot) {
-                Write-Host "Le redémarrage automatique est désactivé. Veuillez redémarrer le système manuellement."
-            } else {
-                Write-Host "Le système redémarrera automatiquement pour finaliser les mises à jour."
-            }
-        }
-        else {
-            Write-Host "Aucun redémarrage en attente."
-        }
-    }
-}
-catch {
-    Write-Error "Une erreur s'est produite lors du processus de mise à jour : $($_.Exception.Message)"
-    # Quitte le script avec un code d'erreur, mais seulement après la journalisation finale
-    Stop-Transcript
-    exit 1
-}
-
-Write-Host "`n--- Script terminé. ---"
-
-# --- Arrêter la transcription pour finaliser le fichier log ---
-Stop-Transcript
-
-# --- PAUSE POUR GARDER LA FENÊTRE OUVERTE EN CAS D'EXÉCUTION MANUELLE ---
-# Cette partie ne s'exécutera que si le script n'a pas quitté prématurément.
-Write-Host "Appuyez sur une touche pour fermer la fenêtre... (La sortie complète est dans le fichier log : $LogFilePath)"
-Pause
+# Empêcher la fermeture automatique de la fenêtre
+Write-Host "Le script a terminé son exécution."
+Write-Host "Vous pouvez maintenant fermer cette fenêtre manuellement ou appuyer sur Entrée." -ForegroundColor Yellow
+Read-Host
