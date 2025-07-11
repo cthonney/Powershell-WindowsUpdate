@@ -87,7 +87,6 @@ catch {
 }
 
 Write-Host "`nScript terminé."
-
-
+# --- AJOUTÉE POUR GARDER LA FENÊTRE OUVERTE EN CAS D'EXÉCUTION MANUELLE ---
 Write-Host "Appuyez sur une touche pour fermer la fenêtre..."
 Pause
