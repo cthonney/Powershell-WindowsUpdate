@@ -1,3 +1,13 @@
+# --- Configuration de la journalisation (LOGGING) ---
+$LogFilePath = Join-Path -Path $env:TEMP -ChildPath "WindowsUpdateScript_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
+# Démarrer la transcription : tout ce qui est affiché dans la console sera aussi écrit dans ce fichier log
+Start-Transcript -Path $LogFilePath -Append -NoClobber -Force
+
+Write-Host "--- Démarrage du script de mise à jour Windows ---"
+Write-Host "La sortie est également enregistrée dans : $LogFilePath"
+
+# --- Reste du script ---
+
 # Vérifier si le module PSWindowsUpdate est installé, sinon l'installer
 if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
     Write-Host "Le module PSWindowsUpdate n'est pas installé. Tentative d'installation..."
@@ -11,7 +21,9 @@ if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
     }
     catch {
         Write-Error "Échec de l'installation du module PSWindowsUpdate. Message d'erreur : $($_.Exception.Message). Veuillez l'installer manuellement ou exécuter ce script avec des privilèges administrateur si ce n'est pas le cas."
-        exit 1 # Quitte le script avec un code d'erreur
+        # Quitte le script avec un code d'erreur, mais seulement après la journalisation finale
+        Stop-Transcript
+        exit 1
     }
 }
 else {
@@ -26,7 +38,9 @@ try {
 }
 catch {
     Write-Error "Échec de l'importation du module PSWindowsUpdate. Message d'erreur : $($_.Exception.Message). Vérifiez qu'il est bien installé et accessible."
-    exit 1 # Quitte le script avec un code d'erreur
+    # Quitte le script avec un code d'erreur, mais seulement après la journalisation finale
+    Stop-Transcript
+    exit 1
 }
 
 # --- Configuration des options ---
@@ -83,10 +97,17 @@ try {
 }
 catch {
     Write-Error "Une erreur s'est produite lors du processus de mise à jour : $($_.Exception.Message)"
-    exit 1 # Quitte le script avec un code d'erreur
+    # Quitte le script avec un code d'erreur, mais seulement après la journalisation finale
+    Stop-Transcript
+    exit 1
 }
 
-Write-Host "`nScript terminé."
-# --- AJOUTÉE POUR GARDER LA FENÊTRE OUVERTE EN CAS D'EXÉCUTION MANUELLE ---
-Write-Host "Appuyez sur une touche pour fermer la fenêtre..."
+Write-Host "`n--- Script terminé. ---"
+
+# --- Arrêter la transcription pour finaliser le fichier log ---
+Stop-Transcript
+
+# --- PAUSE POUR GARDER LA FENÊTRE OUVERTE EN CAS D'EXÉCUTION MANUELLE ---
+# Cette partie ne s'exécutera que si le script n'a pas quitté prématurément.
+Write-Host "Appuyez sur une touche pour fermer la fenêtre... (La sortie complète est dans le fichier log : $LogFilePath)"
 Pause
