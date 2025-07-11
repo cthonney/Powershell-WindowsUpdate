@@ -1,137 +1,152 @@
+
 # Windows Update Automation Script
 
----
+-----
 
 ## Description
 
-Ce dépôt contient un script PowerShell conçu pour automatiser le processus de recherche, de téléchargement et d'installation des mises à jour Windows et des produits Microsoft associés. Il utilise le module `PSWindowsUpdate` pour une gestion simplifiée des mises à jour système.
+This repository contains a PowerShell script designed to automate the process of finding, downloading, and installing Windows updates and related Microsoft products. It leverages the `PSWindowsUpdate` module for simplified system update management.
 
-Le script permet de :
-- Vérifier et installer automatiquement le module `PSWindowsUpdate` si nécessaire.
-- Rechercher les mises à jour disponibles pour Windows et les produits Microsoft (Office, SQL Server, etc.).
-- Télécharger et installer ces mises à jour.
-- Gérer le redémarrage automatique du système si un redémarrage est requis après l'installation des mises à jour.
+The script allows you to:
 
----
+  - Check for and automatically install the `PSWindowsUpdate` module if needed.
+  - Search for available updates for Windows and other Microsoft products (like Office, SQL Server, etc.).
+  - Download and install these updates.
+  - Manage automatic system reboots if a restart is required after updates are installed.
 
-## Prérequis
+-----
 
-Pour que ce script fonctionne correctement, vous devez disposer de :
+## Prerequisites
 
--   **Windows PowerShell 5.1 ou supérieur** (généralement inclus par défaut sur les versions récentes de Windows).
--   Une **connexion Internet** active pour télécharger les mises à jour et le module `PSWindowsUpdate`.
--   Des **droits d'administrateur** pour exécuter le script, car il effectue des opérations système et peut installer des modules.
+For this script to function correctly, you need:
 
----
+  - **Windows PowerShell 5.1 or newer** (usually included by default on recent Windows versions).
+  - An active **internet connection** to download updates and the `PSWindowsUpdate` module.
+  - **Administrator rights** to run the script, as it performs system operations and may install modules.
 
-## Utilisation
+-----
 
-Vous avez plusieurs options pour utiliser ce script :
+## Usage
 
-### Option 1 : Télécharger et exécuter le script directement depuis PowerShell (Recommandé pour l'automatisation)
+You have a few options to use this script:
 
-Cette méthode est pratique pour une exécution rapide ou pour l'intégration dans des tâches automatisées. **Cependant, elle nécessite une compréhension des risques de sécurité.** L'exécution directe de scripts depuis internet peut être dangereuse si la source n'est pas fiable. **Assurez-vous toujours de faire confiance au script et à son origine avant d'utiliser cette méthode.**
+### Option 1: Download and Run the Script Directly from PowerShell (Recommended for Automation)
 
-1.  **URL Raw du script :**
-    Le script `Update-Windows.ps1` est disponible à l'adresse raw suivante :
+This method is handy for quick execution or for integrating into automated tasks. **However, it requires an understanding of security risks.** Directly running scripts from the internet can be dangerous if the source isn't trustworthy. **Always ensure you trust the script and its origin before using this method.**
+
+1.  **Raw Script URL:**
+    The `Update-Windows.ps1` script is available at the following raw URL:
     `https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1`
 
-2.  **Exécutez la commande dans PowerShell (en tant qu'administrateur) :**
+2.  **Run the Command in PowerShell (as Administrator):**
 
-    Ouvrez PowerShell **en tant qu'administrateur** et exécutez la commande suivante :
+    Open PowerShell **as an administrator** and run the following command:
 
     ```powershell
-    # Définir l'URL du script
-    $scriptUrl = "[https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1](https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1)"
+    # Define the script URL
+    # IMPORTANT: Ensure this URL is copied EXACTLY as shown above,
+    # without any extra brackets [ ] or parentheses ( ) from formatted text.
+    $scriptUrl = "https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1"
 
-    # Télécharger le script et l'exécuter directement en mémoire
-    # ATTENTION : L'utilisation de Invoke-Expression (iex) exécute le code téléchargé.
-    # N'utilisez cette méthode qu'avec des sources fiables.
+    # Download the script and execute it directly in memory
+    # WARNING: Using Invoke-Expression (iex) runs the downloaded code.
+    # Only use this method with trusted sources.
     Invoke-WebRequest -Uri $scriptUrl -UseBasicParsing | Invoke-Expression
     ```
 
-    **Alternative (commande unique avec gestion de la politique d'exécution) :**
+    **Alternative (single command with execution policy handling):**
 
     ```powershell
-    # Définir l'URL du script
-    $scriptUrl = "[https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1](https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1)"
+    # Define the script URL
+    $scriptUrl = "https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1"
 
-    # Lance une nouvelle instance de PowerShell, contourne la politique d'exécution pour cette session,
-    # puis télécharge et exécute le script.
+    # Launch a new PowerShell instance, bypasses the execution policy for this session,
+    # then downloads and executes the script.
     powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& {Invoke-WebRequest -Uri '$scriptUrl' -UseBasicParsing | Invoke-Expression}"
     ```
 
-### Option 2 : Télécharger le dépôt en ZIP
+### Option 2: Download the Repository as a ZIP
 
-Cette méthode est simple et ne nécessite pas Git.
+This method is simple and doesn't require Git.
 
-1.  **Téléchargez le script :**
-    Rendez-vous sur la page principale de ce dépôt GitHub : [https://github.com/cthonney/Powershell-WindowsUpdate](https://github.com/cthonney/Powershell-WindowsUpdate)
-    Cliquez sur le bouton vert **"Code"**, puis sélectionnez **"Download ZIP"**.
-    Une fois le fichier ZIP téléchargé, extrayez son contenu dans un dossier de votre choix (par exemple, `C:\Scripts\WindowsUpdate`).
+1.  **Download the script:**
+    Go to the main page of this GitHub repository: [https://github.com/cthonney/Powershell-WindowsUpdate](https://github.com/cthonney/Powershell-WindowsUpdate)
+    Click the green **"Code"** button, then select **"Download ZIP"**.
+    Once the ZIP file is downloaded, extract its contents to a folder of your choice (e.g., `C:\Scripts\WindowsUpdate`).
 
-2.  **Exécutez le script en tant qu'administrateur :**
-    Ouvrez PowerShell en tant qu'administrateur (clic droit sur l'icône PowerShell > "Exécuter en tant qu'administrateur"), naviguez jusqu'au répertoire où vous avez sauvegardé le script, puis exécutez-le :
+2.  **Run the script as Administrator:**
+    Open PowerShell as an administrator (right-click PowerShell icon \> "Run as administrator"), navigate to the directory where you saved the script, then run it:
 
     ```powershell
-    Set-ExecutionPolicy RemoteSigned -Scope Process -Force # Peut être nécessaire si non déjà fait
+    Set-ExecutionPolicy RemoteSigned -Scope Process -Force # May be necessary if not already done
     .\Update-Windows.ps1
     ```
 
-### Option 3 : Cloner le dépôt avec Git
+### Option 3: Clone the Repository with Git
 
-Si vous utilisez Git, c'est la méthode recommandée pour maintenir le script à jour.
+If you use Git, this is the recommended method to keep the script up to date.
 
-1.  **Clonez le dépôt :**
+1.  **Clone the repository:**
+
     ```bash
-    git clone [https://github.com/cthonney/Powershell-WindowsUpdate.git](https://github.com/cthonney/Powershell-WindowsUpdate.git)
+    git clone https://github.com/cthonney/Powershell-WindowsUpdate.git
     cd Powershell-WindowsUpdate
     ```
 
-2.  **Exécutez le script en tant qu'administrateur :**
+2.  **Run the script as Administrator:**
+
     ```powershell
-    Set-ExecutionPolicy RemoteSigned -Scope Process -Force # Peut être nécessaire si non déjà fait
+    Set-ExecutionPolicy RemoteSigned -Scope Process -Force # May be necessary if not already done
     .\Update-Windows.ps1
     ```
 
----
+-----
 
-### Options de configuration dans le script
+### Script Configuration Options
 
-Vous pouvez modifier le comportement du script en ajustant les variables suivantes au début du fichier `Update-Windows.ps1` :
+You can change the script's behavior by adjusting the following variables at the beginning of the `Update-Windows.ps1` file:
 
--   `$AutoReboot = $true` : Définit si le système doit redémarrer automatiquement après les mises à jour si un redémarrage est requis. Changez en `$false` pour désactiver le redémarrage automatique.
--   `$IncludeMicrosoftProducts = $true` : Inclut les mises à jour pour d'autres produits Microsoft (comme Office). Changez en `$false` pour n'installer que les mises à jour Windows OS.
+  - `$AutoReboot = $true`: Determines if the system should automatically reboot after updates if a restart is required. Change to `$false` to disable automatic reboot.
+  - `$IncludeMicrosoftProducts = $true`: Includes updates for other Microsoft products (like Office). Change to `$false` to install only Windows OS updates.
 
----
+-----
 
-## Automatisation avec le Planificateur de Tâches Windows
+## Automation with Windows Task Scheduler
 
-Pour automatiser l'exécution de ce script à intervalles réguliers, vous pouvez utiliser le **Planificateur de Tâches Windows** :
+To automate the execution of this script at regular intervals, you can use **Windows Task Scheduler**:
 
-1.  Ouvrez le **Planificateur de Tâches** (recherchez `taskschd.msc`).
-2.  Dans le volet "Actions" à droite, cliquez sur **"Créer une tâche de base..."**.
-3.  **Nom** : Donnez un nom descriptif (ex: `Mises à jour Windows Automatiques`).
-4.  **Déclencheur** : Choisissez la fréquence souhaitée (ex: `Hebdomadaire`, `Mensuel`).
-5.  **Action** : Sélectionnez **"Démarrer un programme"**.
-6.  **Programme/script** : Entrez `powershell.exe`.
-7.  **Ajouter des arguments (facultatif)** : Collez la ligne suivante, en ajustant le chemin du script si vous avez choisi l'Option 2 ou 3. Si vous utilisez l'Option 1 (téléchargement direct), adaptez les arguments pour inclure la commande `Invoke-WebRequest | Invoke-Expression` à la place du chemin de fichier.
+1.  Open **Task Scheduler** (search for `taskschd.msc`).
+
+2.  In the "Actions" pane on the right, click **"Create Basic Task..."**.
+
+3.  **Name**: Give it a descriptive name (e.g., `Automatic Windows Updates`).
+
+4.  **Trigger**: Choose the desired frequency (e.g., `Weekly`, `Monthly`).
+
+5.  **Action**: Select **"Start a program"**.
+
+6.  **Program/script**: Enter `powershell.exe`.
+
+7.  **Add arguments (optional)**: Paste the following line, adjusting the script path if you chose Option 2 or 3. If you use Option 1 (direct download), you can adapt the arguments to include the `Invoke-WebRequest | Invoke-Expression` command instead of the file path.
+
     ```
-    -NoProfile -ExecutionPolicy Bypass -File "C:\Chemin\Vers\Votre\Script\Update-Windows.ps1"
+    -NoProfile -ExecutionPolicy Bypass -File "C:\Path\To\Your\Script\Update-Windows.ps1"
     ```
-    (Remplacez `C:\Chemin\Vers\Votre\Script\Update-Windows.ps1` par le chemin réel de votre script local).
 
-8.  Cliquez sur `Suivant`, puis sur `Terminer`.
-9.  **Très important :** Double-cliquez sur la tâche que vous venez de créer, allez dans l'onglet **"Général"** et cochez la case **"Exécuter avec les privilèges les plus élevés"** pour assurer que le script dispose des permissions nécessaires.
+    (Replace `C:\Path\To\Your\Script\Update-Windows.ps1` with the actual path to your local script).
 
----
+8.  Click `Next`, then `Finish`.
+
+9.  **Very Important:** Double-click the task you just created, go to the **"General"** tab, and check the box **"Run with highest privileges"** to ensure the script has the necessary permissions.
+
+-----
 
 ## Contribution
 
-Les contributions sont les bienvenues ! Si vous avez des suggestions d'amélioration, des corrections de bugs ou de nouvelles fonctionnalités, n'hésitez pas à ouvrir une issue ou à soumettre une Pull Request.
+Contributions are welcome\! If you have suggestions for improvements, bug fixes, or new features, feel free to open an issue or submit a Pull Request.
 
----
+-----
 
-## Licence
+## License
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+This project is licensed under the MIT License. See the [LICENSE](https://www.google.com/search?q=LICENSE) file for more details.
