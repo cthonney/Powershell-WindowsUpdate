@@ -33,7 +33,7 @@ Vous pouvez exécuter le script directement depuis GitHub sans avoir à téléch
     **Important** : Remplacez l'URL de l'exemple par l'URL "Raw" de votre propre script sur GitHub.
 
     ```powershell
-    iex (irm '[https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1](https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1)')
+    iex (irm 'https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1')
     ```
 
     * `irm` (Invoke-RestMethod) télécharge le contenu du script.
