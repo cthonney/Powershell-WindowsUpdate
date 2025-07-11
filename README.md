@@ -30,7 +30,7 @@ Vous avez plusieurs options pour utiliser ce script :
 
 ### Option 1 : Télécharger et exécuter le script directement depuis PowerShell (Recommandé pour l'automatisation)
 
-Cette méthode est pratique pour une exécution rapide ou pour l'intégration dans des tâches automatisées, mais elle nécessite une **compréhension des risques de sécurité**. L'exécution directe de scripts depuis internet peut être dangereuse si la source n'est pas fiable. **Assurez-vous toujours de faire confiance au script et à son origine.**
+Cette méthode est pratique pour une exécution rapide ou pour l'intégration dans des tâches automatisées. **Cependant, elle nécessite une compréhension des risques de sécurité.** L'exécution directe de scripts depuis internet peut être dangereuse si la source n'est pas fiable. **Assurez-vous toujours de faire confiance au script et à son origine avant d'utiliser cette méthode.**
 
 1.  **URL Raw du script :**
     Le script `Update-Windows.ps1` est disponible à l'adresse raw suivante :
@@ -96,7 +96,7 @@ Si vous utilisez Git, c'est la méthode recommandée pour maintenir le script à
 
 ---
 
-### Options de configuration dans le script :
+### Options de configuration dans le script
 
 Vous pouvez modifier le comportement du script en ajustant les variables suivantes au début du fichier `Update-Windows.ps1` :
 
@@ -115,12 +115,11 @@ Pour automatiser l'exécution de ce script à intervalles réguliers, vous pouve
 4.  **Déclencheur** : Choisissez la fréquence souhaitée (ex: `Hebdomadaire`, `Mensuel`).
 5.  **Action** : Sélectionnez **"Démarrer un programme"**.
 6.  **Programme/script** : Entrez `powershell.exe`.
-7.  **Ajouter des arguments (facultatif)** : Collez la ligne suivante, en ajustant le chemin du script si vous avez choisi l'option 2 ou 3 :
+7.  **Ajouter des arguments (facultatif)** : Collez la ligne suivante, en ajustant le chemin du script si vous avez choisi l'Option 2 ou 3. Si vous utilisez l'Option 1 (téléchargement direct), adaptez les arguments pour inclure la commande `Invoke-WebRequest | Invoke-Expression` à la place du chemin de fichier.
     ```
     -NoProfile -ExecutionPolicy Bypass -File "C:\Chemin\Vers\Votre\Script\Update-Windows.ps1"
     ```
-    (Remplacez `C:\Chemin\Vers\Votre\Script\Update-Windows.ps1` par le chemin réel de votre script).
-    *Si vous utilisez l'option de téléchargement direct (Option 1), vous pouvez adapter les arguments pour appeler la commande `Invoke-WebRequest | Invoke-Expression` à la place du chemin de fichier.*
+    (Remplacez `C:\Chemin\Vers\Votre\Script\Update-Windows.ps1` par le chemin réel de votre script local).
 
 8.  Cliquez sur `Suivant`, puis sur `Terminer`.
 9.  **Très important :** Double-cliquez sur la tâche que vous venez de créer, allez dans l'onglet **"Général"** et cochez la case **"Exécuter avec les privilèges les plus élevés"** pour assurer que le script dispose des permissions nécessaires.
