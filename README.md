@@ -32,20 +32,17 @@ Vous avez plusieurs options pour utiliser ce script :
 
 Cette méthode est pratique pour une exécution rapide ou pour l'intégration dans des tâches automatisées, mais elle nécessite une **compréhension des risques de sécurité**. L'exécution directe de scripts depuis internet peut être dangereuse si la source n'est pas fiable. **Assurez-vous toujours de faire confiance au script et à son origine.**
 
-1.  **Obtenez l'URL Raw de votre script sur GitHub :**
-    * Rendez-vous sur la page de votre script `Update-Windows.ps1` sur GitHub.
-    * Cliquez sur le bouton **"Raw"**. Cela ouvrira le fichier dans une nouvelle page avec son contenu brut.
-    * Copiez l'URL de cette page. Elle devrait ressembler à :
-        `https://raw.githubusercontent.com/VotreNomUtilisateur/VotreRepo/main/Update-Windows.ps1`
-        (Remplacez `VotreNomUtilisateur` et `VotreRepo` par les vôtres).
+1.  **URL Raw du script :**
+    Le script `Update-Windows.ps1` est disponible à l'adresse raw suivante :
+    `https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1`
 
 2.  **Exécutez la commande dans PowerShell (en tant qu'administrateur) :**
 
     Ouvrez PowerShell **en tant qu'administrateur** et exécutez la commande suivante :
 
     ```powershell
-    # Définir l'URL du script (remplacez par votre URL Raw GitHub)
-    $scriptUrl = "[https://raw.githubusercontent.com/VotreNomUtilisateur/VotreRepo/main/Update-Windows.ps1](https://raw.githubusercontent.com/VotreNomUtilisateur/VotreRepo/main/Update-Windows.ps1)"
+    # Définir l'URL du script
+    $scriptUrl = "[https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1](https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1)"
 
     # Télécharger le script et l'exécuter directement en mémoire
     # ATTENTION : L'utilisation de Invoke-Expression (iex) exécute le code téléchargé.
@@ -57,7 +54,7 @@ Cette méthode est pratique pour une exécution rapide ou pour l'intégration da
 
     ```powershell
     # Définir l'URL du script
-    $scriptUrl = "[https://raw.githubusercontent.com/VotreNomUtilisateur/VotreRepo/main/Update-Windows.ps1](https://raw.githubusercontent.com/VotreNomUtilisateur/VotreRepo/main/Update-Windows.ps1)"
+    $scriptUrl = "[https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1](https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1)"
 
     # Lance une nouvelle instance de PowerShell, contourne la politique d'exécution pour cette session,
     # puis télécharge et exécute le script.
@@ -69,10 +66,9 @@ Cette méthode est pratique pour une exécution rapide ou pour l'intégration da
 Cette méthode est simple et ne nécessite pas Git.
 
 1.  **Téléchargez le script :**
-    * Rendez-vous sur la page principale de ce dépôt GitHub.
-    * Cliquez sur le bouton vert **"Code"**.
-    * Sélectionnez **"Download ZIP"**.
-    * Une fois le fichier ZIP téléchargé, extrayez son contenu dans un dossier de votre choix (par exemple, `C:\Scripts\WindowsUpdate`).
+    Rendez-vous sur la page principale de ce dépôt GitHub : [https://github.com/cthonney/Powershell-WindowsUpdate](https://github.com/cthonney/Powershell-WindowsUpdate)
+    Cliquez sur le bouton vert **"Code"**, puis sélectionnez **"Download ZIP"**.
+    Une fois le fichier ZIP téléchargé, extrayez son contenu dans un dossier de votre choix (par exemple, `C:\Scripts\WindowsUpdate`).
 
 2.  **Exécutez le script en tant qu'administrateur :**
     Ouvrez PowerShell en tant qu'administrateur (clic droit sur l'icône PowerShell > "Exécuter en tant qu'administrateur"), naviguez jusqu'au répertoire où vous avez sauvegardé le script, puis exécutez-le :
@@ -88,10 +84,9 @@ Si vous utilisez Git, c'est la méthode recommandée pour maintenir le script à
 
 1.  **Clonez le dépôt :**
     ```bash
-    git clone [https://github.com/VotreNomUtilisateur/VotreRepo.git](https://github.com/VotreNomUtilisateur/VotreRepo.git)
-    cd VotreRepo
+    git clone [https://github.com/cthonney/Powershell-WindowsUpdate.git](https://github.com/cthonney/Powershell-WindowsUpdate.git)
+    cd Powershell-WindowsUpdate
     ```
-    (Remplacez `VotreNomUtilisateur` et `VotreRepo` par les vôtres.)
 
 2.  **Exécutez le script en tant qu'administrateur :**
     ```powershell
@@ -120,12 +115,12 @@ Pour automatiser l'exécution de ce script à intervalles réguliers, vous pouve
 4.  **Déclencheur** : Choisissez la fréquence souhaitée (ex: `Hebdomadaire`, `Mensuel`).
 5.  **Action** : Sélectionnez **"Démarrer un programme"**.
 6.  **Programme/script** : Entrez `powershell.exe`.
-7.  **Ajouter des arguments (facultatif)** : Collez la ligne suivante, en ajustant le chemin du script :
+7.  **Ajouter des arguments (facultatif)** : Collez la ligne suivante, en ajustant le chemin du script si vous avez choisi l'option 2 ou 3 :
     ```
     -NoProfile -ExecutionPolicy Bypass -File "C:\Chemin\Vers\Votre\Script\Update-Windows.ps1"
     ```
     (Remplacez `C:\Chemin\Vers\Votre\Script\Update-Windows.ps1` par le chemin réel de votre script).
-    *Si vous utilisez l'option de téléchargement direct, vous pouvez adapter les arguments pour appeler la commande `Invoke-WebRequest | Invoke-Expression`.*
+    *Si vous utilisez l'option de téléchargement direct (Option 1), vous pouvez adapter les arguments pour appeler la commande `Invoke-WebRequest | Invoke-Expression` à la place du chemin de fichier.*
 
 8.  Cliquez sur `Suivant`, puis sur `Terminer`.
 9.  **Très important :** Double-cliquez sur la tâche que vous venez de créer, allez dans l'onglet **"Général"** et cochez la case **"Exécuter avec les privilèges les plus élevés"** pour assurer que le script dispose des permissions nécessaires.
@@ -140,4 +135,4 @@ Les contributions sont les bienvenues ! Si vous avez des suggestions d'améliora
 
 ## Licence
 
-Ce projet est sous licence APACHE. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
