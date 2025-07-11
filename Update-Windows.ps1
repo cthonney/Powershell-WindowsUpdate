@@ -87,3 +87,7 @@ catch {
 }
 
 Write-Host "`nScript terminé."
+
+
+Write-Host "Appuyez sur une touche pour fermer la fenêtre..."
+Pause
