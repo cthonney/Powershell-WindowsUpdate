@@ -37,26 +37,8 @@ Cette méthode est pratique pour une exécution rapide ou pour l'intégration da
     Ouvrez PowerShell **en tant qu'administrateur** et exécutez la commande suivante :
 
     ```powershell
-    # Définir l'URL du script
-    # IMPORTANT : Assurez-vous que cette URL est copiée EXACTEMENT telle quelle,
-    # sans aucun crochet [ ] ou parenthèse ( ) supplémentaires provenant d'un texte formaté.
-    $scriptUrl = "[https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1](https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1)"
-
-    # Télécharger le script et l'exécuter directement en mémoire
-    # ATTENTION : L'utilisation de Invoke-Expression (iex) exécute le code téléchargé.
-    # N'utilisez cette méthode qu'avec des sources fiables.
+    $scriptUrl = "https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1"
     Invoke-WebRequest -Uri $scriptUrl -UseBasicParsing | Invoke-Expression
-    ```
-
-    **Alternative (commande unique avec gestion de la politique d'exécution) :**
-
-    ```powershell
-    # Définir l'URL du script
-    $scriptUrl = "[https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1](https://raw.githubusercontent.com/cthonney/Powershell-WindowsUpdate/refs/heads/master/Update-Windows.ps1)"
-
-    # Lance une nouvelle instance de PowerShell, contourne la politique d'exécution pour cette session,
-    # puis télécharge et exécute le script.
-    powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& {Invoke-WebRequest -Uri '$scriptUrl' -UseBasicParsing | Invoke-Expression}"
     ```
 
 ### Option 2 : Télécharger le dépôt en ZIP
